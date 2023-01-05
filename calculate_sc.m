@@ -7,7 +7,7 @@ ROI = table2cell(ROI);ROI = cell2mat(ROI);
 average_roi = (ROI(:,[1:end/2])+ROI(:,[end/2+1:end]))/2;
 % ROI(:,[end-1,end])=[];
 % average_roi = (ROI(:,[1:2:end])+ROI(:,[2:2:end]))/2;
-%% step3: calculate_residuals
+%% step2: calculate_residuals
 [nsubj,nROI]=size(average_roi);
 X = [ones(size(nsubj,1)),age,sex,brainsize];
 for i = 1:nsubj
@@ -15,7 +15,7 @@ for i = 1:nsubj
     [~,~,r] = regress(y,X);
     residuals_roi(i,:) = r;
 end
-%% step2: tramsform to Z; z = (roi-mean)/sd
+%% step3: tramsform to Z; z = (roi-mean)/sd
 mean_roi = mean(residuals_roi);
 sd_roi = std(residuals_roi);
 [nsubj,nROI]=size(residuals_roi);
@@ -23,7 +23,7 @@ for i = 1:nsubj
     z = (residuals_roi(i,:)-mean_roi)./sd_roi;
     z_roi(i,:)=z;
 end
-%% step3 structural covariance 
+%% step4 structural covariance 
 % [Intra-individual brain structural covariance (joint variation) 
 %between the ith (for i = 1 to 'total number of ROI') and j-th (for j = 1 to 'total number of ROI') regions of interest in the k-th (for k = 1 to ¡®total number of participants per dataset¡¯) participant]
 %= 1/exp{[(z-transformed value of i-th region of interest in k-th participant) - (z-transformed value of j-th region of interest in k-th participant)]^2}
